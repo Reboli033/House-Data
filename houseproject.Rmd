@@ -1,0 +1,148 @@
+---
+title: "HouseProject"
+author: "S18825"
+date: "2023-09-26"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+```{r}
+library(tinytex)
+```
+
+```{r}
+col_type <- 'ddiilildf'
+house_data <- read_csv("../Data/houseData.csv",col_types = col_type)
+```
+```{r}
+head(house_data)
+```
+```{r}
+summary(house_data)
+```
+```{r}
+glimpse(house_data) # Find the no.of.rows and no.of.columns also find the summary
+```
+# DATA HANDLING
+mutate() - Preprocess task
+select()- get the subset of the data frame
+filter()- filter the data
+arrange() - how to arrange
+summarize()- summarize the observation ; groupby()-
+```{r}
+select(house_data,salePrice,sqFeet)
+```
+```{r}
+# sq feet more than 4500 ,here see that how many number of houses more than 4500
+filter(house_data,sqFeet > 4500)
+```
+
+# Select the sale price ,square footage and year of construction of houses with a pool and built after 1980
+```{r}
+select_houses <- filter(house_data,pool== TRUE & year > 1980 )
+select_houses
+```
+
+```{r}
+select(select_houses,salePrice,sqFeet,year)
+```
+# Piping(%>%)
+With out getting intermediate data set this pipe function used
+get the clear understand #advantage
+```{r}
+house_data %>%
+  filter(pool == TRUE & year > 1980) %>%
+  select(salePrice,sqFeet,year)
+```
+
+# Arrange
+Arrange the house built according to the sale price after 1980
+Here Sales prices are asending order
+```{r}
+house_data %>%
+  filter(year > 1980) %>%
+  arrange(salePrice)
+```
+# desending order
+```{r}
+house_data %>%
+  filter(year > 1980) %>%
+  arrange(desc(salePrice))
+```
+
+# mutate
+create and modify the variables
+Calculate the number of bathroom per bed room
+
+```{r}
+house_data <- house_data %>%
+  mutate(bathRmPerBed = baths / beds)
+```
+
+
+```{r}
+head(house_data)
+```
+# Summarize - What we want require summary
+Average of the price
+
+```{r}
+house_data %>%
+  summarise(meanSalePrice = mean(salePrice))
+```
+# Average Price with swimming pool
+```{r}
+house_data %>%
+  filter(pool == TRUE) %>%
+  summarise(AvergeWithPoolPrice = mean(salePrice))
+```
+# Calulate average salesprice of withput swimming pool
+
+```{r}
+house_data %>%
+  filter(pool == FALSE) %>%
+  summarise(AvergeWithoutPoolPrice = mean(salePrice))
+```
+
+AvergeWithPoolPrice
+<dbl>
+352.1203	
+
+AvergeWithoutPoolPrice
+<dbl>
+271.8674
+
+# House with swimming ful is expensive than without swimming full
+
+# Caluate average sale price for bed rooms
+```{r}
+head(house_data,2)
+
+```
+
+# Summarize with no of beds with pool 
+```{r}
+house_data %>%
+  group_by(beds,pool) %>%
+  summarise(count = n(),
+            average_price = mean(salePrice),
+            average_feet = mean(sqFeet))
+```
+
+
+
+
+
+
+
+
+
+
+
+
